@@ -7,15 +7,52 @@ import urllib.request
 
 class Tools(object):
     @classmethod
-    def flattening_dict(cls,param,targetKey=''):
-        '''扁平化dict类型的param''' 
-        target = {}
-        for k,v in param.items():
-            if isinstance()
+    def flatten_obj(cls,obj):
+        '''扁平化dict类型的param
+        将Python基本类型（包括Dict、Array）的结构扁平化以满足云API的参数要求
 
-        return target
-                
-       
+        例如:
+        {
+            "InstanceSet": [
+                {
+                    "instanceId": "ins-xxx",
+                    "sgIds": ["sg-xx", "sg-yy"]
+                }
+            ]
+        }
+
+        -->
+
+        {
+            "InstanceSet.0.instanceId": "ins-xxx",
+            "InstanceSet.0.sgId.0": "sg-xx",
+            "InstanceSet.0.sgId.1": "sg-yy",
+        }
+        '''
+
+        result = {}
+        if isinstance(obj, dict):
+            for k in obj:
+                cls._flatten_obj(obj[k], k, result)
+        elif isinstance(obj, list):
+            for idx, it in enumerate(obj):
+                _flatten_obj(it, '%s' % idx, result)
+        else:  # basic type
+            result = obj
+        return result
+
+    @classmethod
+    def _flatten_obj(obj, prefix, result):
+        if isinstance(obj, dict):
+            for k in obj:
+                _flatten_obj(obj[k], prefix + '.%s' % k, result)
+        elif isinstance(obj, list):
+            for idx, it in enumerate(obj):
+                _flatten_obj(it, prefix + '.%s' % idx, result)
+        else:  # basic type
+            result[prefix] = obj
+
+
     @classmethod    
     def create_url_with_signStr(cls,key,dict_data,module=None):
         '''
@@ -55,6 +92,7 @@ class Tools(object):
 
 
 if __name__ == '__main__':
+    '''
     param = {
             'Action' : 'DescribeInstances',
             'InstanceIds.0' : 'ins-09dx96dg',
@@ -68,3 +106,13 @@ if __name__ == '__main__':
     }
     result = Tools.create_url_with_signStr(SECRET_KEY,param)
     print(result)
+    '''
+    param = {
+        "InstanceSet": [
+            {
+                "instanceId": "ins-xxx",
+                "sgIds": ["sg-xx", "sg-yy"]
+            }
+        ]
+    }
+    print(Tools.flatten_obj(param))

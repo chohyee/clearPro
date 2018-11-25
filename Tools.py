@@ -2,14 +2,24 @@
 import hashlib
 import hmac
 import base64
-from config import *
+#from config import *
 import urllib.request
 
 class Tools(object):
-    '''cloudapi的请求进行鉴权，获取Signature参数'''
     @classmethod
+    def flattening_dict(cls,param,targetKey=''):
+        '''扁平化dict类型的param''' 
+        target = {}
+        for k,v in param.items():
+            if isinstance()
+
+        return target
+                
+       
+    @classmethod    
     def create_url_with_signStr(cls,key,dict_data,module=None):
         '''
+        cloudapi的请求进行鉴权，获取Signature参数
         yunapi鉴权，传入字典类型的data，返回包含加密的signature的字符串
         :param dict_data:
         :return:

@@ -2,7 +2,6 @@
 import hashlib
 import hmac
 import base64
-#from config import *
 import urllib.request
 
 class Tools(object):
@@ -36,19 +35,19 @@ class Tools(object):
                 cls._flatten_obj(obj[k], k, result)
         elif isinstance(obj, list):
             for idx, it in enumerate(obj):
-                _flatten_obj(it, '%s' % idx, result)
+                cls_flatten_obj(it, '%s' % idx, result)
         else:  # basic type
             result = obj
         return result
 
     @classmethod
-    def _flatten_obj(obj, prefix, result):
+    def _flatten_obj(cls,obj, prefix, result):
         if isinstance(obj, dict):
             for k in obj:
-                _flatten_obj(obj[k], prefix + '.%s' % k, result)
+               cls._flatten_obj(obj[k], prefix + '.%s' % k, result)
         elif isinstance(obj, list):
             for idx, it in enumerate(obj):
-                _flatten_obj(it, prefix + '.%s' % idx, result)
+               cls._flatten_obj(it, prefix + '.%s' % idx, result)
         else:  # basic type
             result[prefix] = obj
 
@@ -60,6 +59,7 @@ class Tools(object):
         yunapi鉴权，传入字典类型的data，返回包含加密的signature的字符串
         :param dict_data:
         :return:
+        :key secretKey
         '''
         dic_sort_data_list = sorted(dict_data.keys())
         request_str = ''
@@ -86,7 +86,9 @@ class Tools(object):
     def sign_str(cls,secret_key,str,hash_method):
         hmac_str = hmac.new(secret_key.encode('utf-8'),str.encode('utf-8'),hash_method).digest()
         print(hmac_str)
+        print(base64.b64encode(hmac_str))
         return base64.b64encode(hmac_str)
+        
 
 
 
@@ -107,6 +109,33 @@ if __name__ == '__main__':
     result = Tools.create_url_with_signStr(SECRET_KEY,param)
     print(result)
     '''
+    '''
+    pp = {
+    'SystemDisk.DiskType':'LOCAL_BASIC',
+    'VirtualPrivateCloud.SubnetId':'subnet-0m0p0mz4',
+    'Version':'2017-03-12',
+    'InternetAccessible.InternetMaxBandwidthOut':'0',
+    'Nonce':'20735',
+    'Placement.ProjectId':'0',
+    'Timestamp' : 1465185768,
+    'HostName':'wo.ni.ta',
+    'ImageId':'img-fyo91wv5',
+    'InstanceChargeType':'POSTPAID_BY_HOUR',
+    'InternetAccessible.PublicIpAssigned':'FALSE',
+    'InstanceType':'BMS4.20XLARGE384',
+    'Region':'ap-guangzhou',
+    'Placement.Zone':'ap-guangzhou-3',
+    'InternetAccessible.InternetChargeType','TRAFFIC_POSTPAID_BY_HOUR',
+    'Action'；'RunInstances',
+    'SystemDisk.DiskSize':440,
+    'InstanceName':'bm1',
+    'UserData':'IyEvYmluL2Jhc2gKeXVtIGluc3RhbGwgLXkgaHR0cGQgbWFyaWFkYi1zZXJ2ZXIKc3lzdGVtY3RsIHN0YXJ0IGh0dHBkCnN5c3RlbWN0bCBlbmFibGUgaHR0cGQ%3D',
+    'VirtualPrivateCloud.VpcId':'vpc-pifsskxb',
+    'LoginSettings.Password':'isd@cloud',
+    'SecretId':'AKIDIVXOI13F1gBVdaqwLZbR5XnrpbCbenfP'
+    }
+    '''
+    '''
     param = {
         "InstanceSet": [
             {
@@ -116,3 +145,5 @@ if __name__ == '__main__':
         ]
     }
     print(Tools.flatten_obj(param))
+    '''
+

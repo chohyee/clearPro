@@ -4,3 +4,4 @@ from yunapi_interface import YUNAPI
 
 if __name__ == '__main__':
    print( YUNAPI().DescribeVpnGateways('ap-singapore'))
+   print( YUNAPI().DescribeZones('ap-singapore'))

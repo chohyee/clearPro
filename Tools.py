@@ -61,6 +61,8 @@ class Tools(object):
         :return:
         :key secretKey
         '''
+        dict_data = cls.flatten_obj(dict_data)
+        print(dict_data)
         dic_sort_data_list = sorted(dict_data.keys())
         request_str = ''
         for index,itm in enumerate(dic_sort_data_list,start=1):
@@ -74,12 +76,16 @@ class Tools(object):
                 request_str = request_str+itm+'='+value
         #获取POST请求的signature
         if module:
-            module_url = 'POST'+module+'.tencentcloudapi.com/?'
+            if module == 'lb':
+                module_url = 'POST'+module+'.api.qcloud.com/v2/index.php?'
+            else:
+                module_url = 'POST'+module+'.tencentcloudapi.com/?'
         else:
             module_url = 'POSTvpc.tencentcloudapi.com/?'
         print(module_url)
         signature = Tools.sign_str(key,module_url+request_str,hashlib.sha1)
         signature_parse = urllib.parse.quote(str(signature,'utf-8'))
+        print(request_str+'&Signature='+signature_parse)
         return request_str+'&Signature='+signature_parse
 
     @classmethod

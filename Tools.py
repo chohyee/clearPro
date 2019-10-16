@@ -62,7 +62,6 @@ class Tools(object):
         :key secretKey
         '''
         dict_data = cls.flatten_obj(dict_data)
-        print(dict_data)
         dic_sort_data_list = sorted(dict_data.keys())
         request_str = ''
         for index,itm in enumerate(dic_sort_data_list,start=1):
@@ -83,16 +82,14 @@ class Tools(object):
         else:
             module_url = 'POSTvpc.tencentcloudapi.com/?'
         print(module_url)
+        #module_url = 'POSTcvm.ap-shenzhen-fsi.tencentcloudapi.com/?'
         signature = Tools.sign_str(key,module_url+request_str,hashlib.sha1)
         signature_parse = urllib.parse.quote(str(signature,'utf-8'))
-        print(request_str+'&Signature='+signature_parse)
         return request_str+'&Signature='+signature_parse
 
     @classmethod
     def sign_str(cls,secret_key,str,hash_method):
         hmac_str = hmac.new(secret_key.encode('utf-8'),str.encode('utf-8'),hash_method).digest()
-        print(hmac_str)
-        print(base64.b64encode(hmac_str))
         return base64.b64encode(hmac_str)
         
 

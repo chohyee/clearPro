@@ -23,13 +23,15 @@ class HttpUtil(object):
         :return:
         '''
         if module:
-            module_url = 'https://'+module+'.tencentcloudapi.com/'
+            if module == 'lb':
+                module_url = 'https://'+module+'.api.qcloud.com/v2/index.php'
+            else:
+                module_url = 'https://'+module+'.tencentcloudapi.com/'
         else:
             module_url = 'https://vpc.tencentcloudapi.com/'
-            
+        #module_url = 'https://cvm.ap-shenzhen-fsi.tencentcloudapi.com/'    
         #module:cloudapi-post
         req = request.Request(module_url,bytes(data_str,'utf-8'))
-        print(bytes(data_str,'utf-8'))
         response = request.urlopen(req).read()
         return response
 
